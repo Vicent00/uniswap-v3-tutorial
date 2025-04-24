@@ -3,15 +3,16 @@
 > 💡 **Quick Tip**: If you're coming from Uniswap V2, this guide will help you understand the key differences and how to implement V3 swaps!
 
 ## 📑 Table of Contents
-- [🎯 Introduction](#introduction)
-- [🔄 Key Differences from V2](#key-differences-from-v2)
-- [🚀 Getting Started](#getting-started)
-- [📚 Understanding the Code](#understanding-the-code)
-- [💻 Interactive Examples](#interactive-examples)
-- [⭐ Best Practices](#best-practices)
-- [❓ Common Issues](#common-issues)
-- [🔧 Testing](#testing)
-- [📚 Resources](#resources)
+- [🎯 Introduction]
+- [🔄 Key Differences from V2]
+- [🎓 Transition Guide]
+- [🚀 Getting Started]
+- [📚 Understanding the Code]
+- [💻 Interactive Examples]
+- [⭐ Best Practices]
+- [❓ Common Issues]
+- [🔧 Testing]
+- [📚 Resources]
 
 ## 🎯 Introduction
 Welcome to the Uniswap V3 Swap Tutorial! 🎉 This guide will help you understand how to implement swaps in Uniswap V3, especially if you're coming from V2. We'll cover the main differences and show you how to implement basic swap functionality.
@@ -20,24 +21,43 @@ Welcome to the Uniswap V3 Swap Tutorial! 🎉 This guide will help you understan
 
 ## 🔄 Key Differences from V2
 
-### 1. 🌊 Concentrated Liquidity
-- **V2** 📊: Liquidity spread across all prices
-- **V3** 🎯: Liquidity concentrated in specific price ranges
-  ```solidity
-  // V3 allows LPs to provide liquidity in specific price ranges
-  // This means better capital efficiency but more complex swaps
-  ```
+### 1. 🌊 Liquidity Management
+- **V2** 📊: 
+  - Uniform liquidity distribution
+  - Simple x * y = k formula
+  - All liquidity at all prices
+  - Less capital efficient
 
-### 2. 💰 Multiple Fee Tiers
-- **V2** 💸: Fixed 0.3% fee
-- **V3** 🎯: Three fee tiers:
-  - 0.05% (500) 💎: For stable pairs (USDC/USDT)
-  - 0.3% (3000) 💵: For regular pairs (ETH/USDC)
-  - 1% (10000) 🔮: For exotic pairs
+- **V3** 🎯: 
+  - Concentrated liquidity ranges
+  - Complex price curve with multiple ranges
+  - Liquidity only where needed
+  - Up to 4000x more capital efficient
 
-### 3. 🔧 Router Structure
-- **V2** 📝: Simple path-based swaps
-- **V3** 🛠️: Structured parameters for more control
+### 2. 💰 Fee Structure
+- **V2** 💸: 
+  - Single fee tier (0.3%)
+  - Fixed for all pairs
+  - Simple fee calculation
+
+- **V3** 🎯: 
+  - Three fee tiers:
+    - 0.05% (500) 💎: Stable pairs (USDC/USDT)
+    - 0.3% (3000) 💵: Regular pairs (ETH/USDC)
+    - 1% (10000) 🔮: Exotic pairs
+  - Dynamic fee calculation
+  - Better suited for different pair types
+
+### 3. 🔧 Technical Architecture
+- **V2** 📝: 
+  - Simple router interface
+  - Basic path-based swaps
+  - Limited parameter control
+
+- **V3** 🛠️: 
+  - Complex router with multiple interfaces
+  - Structured parameter system
+  - Advanced price control
   ```solidity
   // V2
   router.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline);
@@ -54,6 +74,38 @@ Welcome to the Uniswap V3 Swap Tutorial! 🎉 This guide will help you understan
       sqrtPriceLimitX96: 0
   }));
   ```
+
+## 🎓 Transition Guide
+
+### 1. 📚 Learning Resources
+- **Official Documentation** 📖
+  - [Uniswap V3 Documentation](https://docs.uniswap.org/)
+  - [V3 Technical Specification](https://docs.uniswap.org/contracts/v3/guides/swaps/single-swaps#a-complete-single-swap-contract)
+  - [V3 SDK Documentation](https://docs.uniswap.org/sdk/v3/overview)
+
+- **Community Resources** 👥
+  - [Uniswap Discord](https://discord.gg/uniswap)
+  - [Uniswap Forum](https://gov.uniswap.org/)
+
+### 2. 🔄 Code Migration Steps
+
+#### Step 1: Understanding New Concepts
+```solidity
+// V2: Simple path-based swap
+router.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline);
+
+// V3: Structured parameter swap
+router.exactInputSingle(ExactInputSingleParams({
+    tokenIn: token0,
+    tokenOut: token1,
+    fee: poolFee,        // New concept
+    recipient: to,
+    deadline: deadline,
+    amountIn: amountIn,
+    amountOutMinimum: amountOutMin,
+    sqrtPriceLimitX96: 0 // New concept
+}));
+```
 
 ## 🚀 Getting Started
 
